@@ -6,15 +6,16 @@ import { ProductImageRepository } from './product-image.repository';
 
 @Injectable()
 export class ProductImageService {
+	constructor(
+		@InjectRepository(ProductImageRepository)
+		private productImageRepository: ProductImageRepository,
+	) {}
 
-    constructor(
-        @InjectRepository(ProductImageRepository)
-        private productImageRepository: ProductImageRepository,
-    ) { }
-
-    public async createProductImage(
-        createProductImageDto: CreateProductImageDTO,
-    ): Promise<ProductImage> {
-        return await this.productImageRepository.createProductImage(createProductImageDto);
-    }
+	public async createProductImage(
+		createProductImageDto: CreateProductImageDTO,
+	): Promise<ProductImage> {
+		return await this.productImageRepository.createProductImage(
+			createProductImageDto,
+		);
+	}
 }

@@ -7,13 +7,12 @@ import { AppController } from './app.controller';
 import { CategoriesModule } from './categories/categories.module';
 
 @Module({
-    imports: [
-        TypeOrmModule.forRoot(typeOrmConfig),
-        AuthModule,
-        ProductsModule,
-        CategoriesModule,
-    ],
-    controllers: [AppController],
+	imports: [
+		TypeOrmModule.forRoot(typeOrmConfig),
+		AuthModule,
+		ProductsModule,
+		CategoriesModule,
+	],
+	controllers: [AppController],
 })
-export class AppModule {
-}
+export class AppModule {}

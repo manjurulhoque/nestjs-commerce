@@ -16,57 +16,70 @@ const jwtConfig = config.get('jwt');
 
 @Injectable()
 export class AuthService {
-    private logger = new Logger('AuthService');
+	private logger = new Logger('AuthService');
 
-    constructor(
-        @InjectRepository(UserRepository)
-        private userRepository: UserRepository,
-        private jwtService: JwtService,
-    ) { }
+	constructor(
+		@InjectRepository(UserRepository)
+		private userRepository: UserRepository,
+		private jwtService: JwtService,
+	) {}
 
-    async signUp(authCredentialsDto: AuthCredentialsDto): Promise<ReturnUser> {
-        return this.userRepository.signUp(authCredentialsDto);
-    }
+	async signUp(authCredentialsDto: AuthCredentialsDto): Promise<ReturnUser> {
+		return this.userRepository.signUp(authCredentialsDto);
+	}
 
-    async signIn(authCredentialsDto: AuthUserLoginDto): Promise<{ token: string, username: string, id: number }> {
-        let { username } = authCredentialsDto;
-        const found = await this.userRepository.findOne({ username });
-        let token;
-        {
-            // tslint:disable-next-line:no-shadowed-variable
-            const username = await this.userRepository.validateUserPassword(authCredentialsDto);
+	async signIn(
+		authCredentialsDto: AuthUserLoginDto,
+	): Promise<{ token: string; username: string; id: number }> {
+		let { username } = authCredentialsDto;
+		const found = await this.userRepository.findOneBy({ username });
+		let token;
+		{
+			// tslint:disable-next-line:no-shadowed-variable
+			const username =
+				await this.userRepository.validateUserPassword(
+					authCredentialsDto,
+				);
 
-            if (!username) {
-                throw new UnauthorizedException('Invalid credentials');
-            }
+			if (!username) {
+				throw new UnauthorizedException('Invalid credentials');
+			}
 
-            const payload: JwtPayload = { username };
-            token = await this.jwtService.sign(payload);
-            this.logger.debug(`Generated JWT Token with payload ${JSON.stringify(payload)}`);
-        }
+			const payload: JwtPayload = { username };
+			token = await this.jwtService.sign(payload);
+			this.logger.debug(
+				`Generated JWT Token with payload ${JSON.stringify(payload)}`,
+			);
+		}
 
-        username = found.username;
-        const id = found.id;
+		username = found.username;
+		const id = found.id;
 
-        return { token, username, id };
-    }
+		return { token, username, id };
+	}
 
-    public async getUserFromTokenPayload(payload: AuthTokenPayloadDTO): Promise<ReturnUser> {
-        return await this.userRepository.findOne({ username: payload.username });
-    }
+	public async getUserFromTokenPayload(
+		payload: AuthTokenPayloadDTO,
+	): Promise<ReturnUser> {
+		return await this.userRepository.findOneBy({
+			username: payload.username,
+		});
+	}
 
-    public async decodeToken(token: string, tokenType: JwtTokenTypeEnum): Promise<AuthTokenPayloadDTO | any> {
+	public async decodeToken(
+		token: string,
+		tokenType: JwtTokenTypeEnum,
+	): Promise<AuthTokenPayloadDTO | any> {
+		if (tokenType === JwtTokenTypeEnum.refreshToken) {
+			// secret = this.configService.get(EnvKeyEnum.JWTRefreshSecretKey);
+		}
 
-        if (tokenType === JwtTokenTypeEnum.refreshToken) {
-            // secret = this.configService.get(EnvKeyEnum.JWTRefreshSecretKey);
-        }
+		token = token.replace('Bearer ', '');
 
-        token = token.replace('Bearer ', '');
-
-        try {
-            return this.jwtService.verify(token);
-        } catch (err) {
-            throw AuthException.incorrectAuthorizationToken();
-        }
-    }
+		try {
+			return this.jwtService.verify(token);
+		} catch (err) {
+			throw AuthException.incorrectAuthorizationToken();
+		}
+	}
 }

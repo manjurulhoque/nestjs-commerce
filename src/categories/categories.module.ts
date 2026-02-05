@@ -6,8 +6,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { CategoryRepository } from './categories.repository';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([CategoryRepository]), AuthModule],
-    controllers: [CategoriesController],
-    providers: [CategoriesService]
+	imports: [TypeOrmModule.forFeature([CategoryRepository]), AuthModule],
+	controllers: [CategoriesController],
+	providers: [CategoriesService],
 })
-export class CategoriesModule { }
+export class CategoriesModule {}

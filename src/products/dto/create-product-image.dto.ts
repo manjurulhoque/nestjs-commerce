@@ -1,10 +1,9 @@
 import { IsString, IsNumber } from 'class-validator';
 
 export class CreateProductImageDTO {
+	@IsNumber()
+	product_id: number;
 
-    @IsNumber()
-    product_id: number
-
-    @IsString()
-    image_url: string = ' '
+	@IsString()
+	image_url: string = ' ';
 }

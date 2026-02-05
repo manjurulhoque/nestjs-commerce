@@ -7,29 +7,30 @@ import { Category } from './entities/category.entity';
 
 @Injectable()
 export class CategoriesService {
+	constructor(
+		@InjectRepository(CategoryRepository)
+		private categoryRepository: CategoryRepository,
+	) {}
 
-    constructor(
-        @InjectRepository(CategoryRepository)
-        private categoryRepository: CategoryRepository,
-    ) { }
+	public async create(
+		createCategoryDto: CreateCategoryDto,
+	): Promise<Category> {
+		return await this.categoryRepository.save(createCategoryDto);
+	}
 
-    public async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
-        return await this.categoryRepository.save(createCategoryDto);
-    }
+	public async findAll(): Promise<Category[]> {
+		return await this.categoryRepository.find();
+	}
 
-    public async findAll(): Promise<Category[]> {
-        return await this.categoryRepository.find();
-    }
+	findOne(id: number) {
+		return `This action returns a #${id} category`;
+	}
 
-    findOne(id: number) {
-        return `This action returns a #${id} category`;
-    }
+	update(id: number, updateCategoryDto: UpdateCategoryDto) {
+		return `This action updates a #${id} category`;
+	}
 
-    update(id: number, updateCategoryDto: UpdateCategoryDto) {
-        return `This action updates a #${id} category`;
-    }
-
-    remove(id: number) {
-        return `This action removes a #${id} category`;
-    }
+	remove(id: number) {
+		return `This action removes a #${id} category`;
+	}
 }

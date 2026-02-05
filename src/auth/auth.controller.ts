@@ -8,31 +8,33 @@ import { ReturnUser } from './dto/index.dto';
 @Controller('auth')
 @ApiTags('auth')
 export class AuthController {
-    constructor(
-        private readonly authService: AuthService,
-    ) { }
+	constructor(private readonly authService: AuthService) {}
 
-    @Post('/signup')
-    @ApiOperation({
-        description: 'Register new user',
-        summary: 'User registration',
-    })
-    @ApiBody({
-        type: AuthCredentialsDto,
-    })
-    signUp(@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto): Promise<ReturnUser> {
-        return this.authService.signUp(authCredentialsDto);
-    }
+	@Post('/signup')
+	@ApiOperation({
+		description: 'Register new user',
+		summary: 'User registration',
+	})
+	@ApiBody({
+		type: AuthCredentialsDto,
+	})
+	signUp(
+		@Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
+	): Promise<ReturnUser> {
+		return this.authService.signUp(authCredentialsDto);
+	}
 
-    @Post('/signin')
-    @ApiOperation({
-        description: 'Login a user',
-        summary: 'User login',
-    })
-    @ApiBody({
-        type: AuthUserLoginDto,
-    })
-    signIn(@Body(ValidationPipe) authUserLoginDto: AuthUserLoginDto): Promise<{ token: string, username: string, id: number }> {
-        return this.authService.signIn(authUserLoginDto);
-    }
+	@Post('/signin')
+	@ApiOperation({
+		description: 'Login a user',
+		summary: 'User login',
+	})
+	@ApiBody({
+		type: AuthUserLoginDto,
+	})
+	signIn(
+		@Body(ValidationPipe) authUserLoginDto: AuthUserLoginDto,
+	): Promise<{ token: string; username: string; id: number }> {
+		return this.authService.signIn(authUserLoginDto);
+	}
 }

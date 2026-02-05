@@ -1,3 +1,3 @@
 export class AuthTokenPayloadDTO {
-    username: string;
+	username: string;
 }
