@@ -1,4 +1,4 @@
-import { Repository, EntityRepository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import {
 	ConflictException,
 	InternalServerErrorException,
@@ -9,10 +9,16 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthUserLoginDto } from './dto/auth-user-login.dto';
 import { Logger } from '@nestjs/common';
 import { ReturnUser } from './dto/index.dto';
+import { Injectable } from '@nestjs/common';
 
-@EntityRepository(User)
+@Injectable()
 export class UserRepository extends Repository<User> {
 	logger = new Logger('UserRepository');
+
+	constructor(private dataSource: DataSource) {
+		// Pass the Entity and EntityManager to the base Repository
+		super(User, dataSource.createEntityManager());
+	}
 
 	async signUp(authCredentialsDto: AuthCredentialsDto): Promise<ReturnUser> {
 		const { username, password } = authCredentialsDto;
