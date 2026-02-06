@@ -6,13 +6,15 @@ import { ProductImageService } from './product-image.service';
 import { ProductController } from './product.controller';
 import { ProductRepository } from './product.repository';
 import { ProductService } from './product.service';
+import { Product } from './product.entity';
+import { ProductImage } from './product-image.entity';
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([ProductRepository, ProductImageRepository]),
+		TypeOrmModule.forFeature([Product, ProductImage]),
 		AuthModule,
 	],
 	controllers: [ProductController],
-	providers: [ProductService, ProductImageService],
+	providers: [ProductService, ProductImageService, ProductRepository, ProductImageRepository],
 })
-export class ProductsModule {}
+export class ProductsModule { }

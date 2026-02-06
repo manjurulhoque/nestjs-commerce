@@ -1,9 +1,16 @@
-import { Repository, EntityRepository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { CreateProductImageDTO } from './dto/create-product-image.dto';
 import { ProductImage } from './product-image.entity';
+import { Injectable } from '@nestjs/common';
 
-@EntityRepository(ProductImage)
+@Injectable()
 export class ProductImageRepository extends Repository<ProductImage> {
+
+	constructor(private dataSource: DataSource) {
+		// Pass the Entity and EntityManager to the base Repository
+		super(ProductImage, dataSource.createEntityManager());
+	}
+
 	public async createProductImage(
 		createProductImageDto: CreateProductImageDTO,
 	): Promise<ProductImage> {
