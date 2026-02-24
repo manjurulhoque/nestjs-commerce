@@ -10,7 +10,7 @@ import {
 	ValidationPipe,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AdminGuard } from 'src/auth/guards/roles.guard';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -20,7 +20,7 @@ import { Category } from './entities/category.entity';
 @Controller('categories')
 @ApiTags('categories')
 export class CategoriesController {
-	constructor(private categoriesService: CategoriesService) {}
+	constructor(private categoriesService: CategoriesService) { }
 
 	@Get()
 	public async findAll(): Promise<Category[]> {
@@ -29,6 +29,7 @@ export class CategoriesController {
 
 	@Post()
 	@UseGuards(AuthGuard(), AdminGuard)
+	@ApiBearerAuth('JWT-auth')
 	public async create(
 		@Body(ValidationPipe) createCategoryDto: CreateCategoryDto,
 	): Promise<Category> {

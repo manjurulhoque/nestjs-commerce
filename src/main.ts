@@ -10,6 +10,7 @@ async function bootstrap() {
 	const app = await NestFactory.create(AppModule, {
 		logger: new ConsoleLogger({
 			json: true,
+			colors: true,
 		}),
 	});
 
@@ -17,10 +18,22 @@ async function bootstrap() {
 		.setTitle('NestJS E-commerce API')
 		.setDescription('E-commerce API')
 		.setVersion('1.0')
+		.addBasicAuth()
+		.addBearerAuth(
+			{
+				type: 'http',
+				scheme: 'bearer',
+				bearerFormat: 'Bearer',
+				description: 'Enter Bearer token',
+				in: 'header',
+			},
+			'JWT-auth', // This name here is important for matching up with @ApiBearerAuth() in your controller!
+		)
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('swagger', app, document, {
 		swaggerOptions: { defaultModelsExpandDepth: -1 },
+		customSiteTitle: 'NestJS E-commerce API',
 	});
 
 	await app.listen(serverConfig.port);

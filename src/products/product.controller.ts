@@ -12,6 +12,7 @@ import {
 	UseGuards,
 	UploadedFiles,
 	UseInterceptors,
+	Logger,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDTO } from './dto/create-product.dto';
@@ -36,13 +37,16 @@ import { AdminGuard } from 'src/auth/guards/roles.guard';
 @Controller('products')
 @ApiTags('products')
 export class ProductController {
+	private readonly logger = new Logger(ProductController.name);
+
 	constructor(
 		private productService: ProductService,
 		private productImageService: ProductImageService,
-	) {}
+	) { }
 
 	@Post('')
 	@UseGuards(AuthGuard(), AdminGuard)
+	@ApiBearerAuth('JWT-auth')
 	@UseInterceptors(FilesInterceptor('images', 20, productImagesConfig))
 	@ApiConsumes('multipart/form-data')
 	@ApiBody({
@@ -87,6 +91,7 @@ export class ProductController {
 
 	@Patch('/edit/:id')
 	@UseGuards(AuthGuard())
+	@ApiBearerAuth('JWT-auth')
 	@UseInterceptors(FilesInterceptor('images', 20, productImagesConfig))
 	@ApiConsumes('multipart/form-data')
 	@ApiBody({
@@ -117,6 +122,7 @@ export class ProductController {
 
 	@Delete('/delete/:id')
 	@UseGuards(AuthGuard())
+	@ApiBearerAuth('JWT-auth')
 	public async deleteById(@Param('id') productId: number) {
 		const deleted = await this.productService.deleteProduct(productId);
 		return deleted;
