@@ -53,6 +53,26 @@ export class ProductController {
 		schema: {
 			type: 'object',
 			properties: {
+				name: {
+					type: 'string',
+					description: 'The name of the product',
+					example: 'Product 1',
+				},
+				description: {
+					type: 'string',
+					description: 'The description of the product',
+					example: 'This is a product description',
+				},
+				price: {
+					type: 'number',
+					description: 'The price of the product',
+					example: 100,
+				},
+				category_id: {
+					type: 'number',
+					description: 'The category id of the product',
+					example: 1,
+				},
 				images: {
 					type: 'array',
 					items: {
@@ -61,7 +81,7 @@ export class ProductController {
 					},
 				},
 			},
-			required: ['images'],
+			required: ['images', 'name', 'description', 'price', 'category_id'],
 		},
 	})
 	@ApiBadRequestResponse()
@@ -69,16 +89,12 @@ export class ProductController {
 		@UploadedFiles() images,
 		@Body(ValidationPipe) createProductDto: CreateProductDTO,
 	): Promise<Product> {
-		const newProduct =
-			await this.productService.createProduct(createProductDto);
+		const newProduct = await this.productService.createProduct(createProductDto);
 		for (const image of images) {
 			const productImageDto = new CreateProductImageDTO();
 			productImageDto.image_url = image.path;
 			productImageDto.product_id = newProduct.id;
-			const productImage =
-				await this.productImageService.createProductImage(
-					productImageDto,
-				);
+			const productImage = await this.productImageService.createProductImage(productImageDto);
 		}
 		return newProduct;
 	}
@@ -98,6 +114,26 @@ export class ProductController {
 		schema: {
 			type: 'object',
 			properties: {
+				name: {
+					type: 'string',
+					description: 'The name of the product',
+					example: 'Product 1',
+				},
+				description: {
+					type: 'string',
+					description: 'The description of the product',
+					example: 'This is a product description',
+				},
+				price: {
+					type: 'number',
+					description: 'The price of the product',
+					example: 100,
+				},
+				category_id: {
+					type: 'number',
+					description: 'The category id of the product',
+					example: 1,
+				},
 				images: {
 					type: 'array',
 					items: {
@@ -106,6 +142,7 @@ export class ProductController {
 					},
 				},
 			},
+			required: ['name', 'description', 'price', 'category_id'],
 		},
 	})
 	@ApiBadRequestResponse()
